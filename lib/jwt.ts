@@ -1,96 +1,56 @@
 import { JWTPayload } from '@/types/types';
 import jwt from 'jsonwebtoken';
 
-const ACCESS_SECRET = process.env.JWT_ACCESS_SECRET!;
-const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET!;
-const EMAIL_SECRET = process.env.JWT_EMAIL_SECRET!;
-const RESET_SECRET = process.env.JWT_RESET_SECRET!;
-
-if (!ACCESS_SECRET || !REFRESH_SECRET || !EMAIL_SECRET || !RESET_SECRET) {
-  throw new Error('JWT secrets must be defined in environment variables');
+function getEnvVar(name: string): string {
+  const value = process.env[name];
+  if (!value) throw new Error(`Missing environment variable: ${name}`);
+  return value;
 }
 
 export function generateAccessToken(payload: JWTPayload): string {
-  return jwt.sign(
-    { ...payload, type: 'access' },
-    ACCESS_SECRET,
-    { expiresIn: '1d' } // 1 day
-  );
+  const secret = getEnvVar('JWT_ACCESS_SECRET');
+  return jwt.sign({ ...payload, type: 'access' }, secret, { expiresIn: '1d' });
 }
 
 export function generateRefreshToken(payload: JWTPayload): string {
-  return jwt.sign(
-    { ...payload, type: 'refresh' },
-    REFRESH_SECRET,
-    { expiresIn: '7d' } // 7 days
-  );
+  const secret = getEnvVar('JWT_REFRESH_SECRET');
+  return jwt.sign({ ...payload, type: 'refresh' }, secret, { expiresIn: '7d' });
 }
 
 export function generateEmailVerificationToken(payload: JWTPayload): string {
-  return jwt.sign(
-    { ...payload, type: 'email' },
-    EMAIL_SECRET,
-    { expiresIn: '10m' } // 10 minutes
-  );
+  const secret = getEnvVar('JWT_EMAIL_SECRET');
+  return jwt.sign({ ...payload, type: 'email' }, secret, { expiresIn: '10m' });
 }
 
 export function generatePasswordResetToken(payload: JWTPayload): string {
-  return jwt.sign(
-    { ...payload, type: 'reset' },
-    RESET_SECRET,
-    { expiresIn: '10m' } // 10 minutes
-  );
+  const secret = getEnvVar('JWT_RESET_SECRET');
+  return jwt.sign({ ...payload, type: 'reset' }, secret, { expiresIn: '10m' });
 }
 
 export function verifyAccessToken(token: string): JWTPayload {
-  console.log('recieved')
-  try {
-    const decoded = jwt.verify(token, ACCESS_SECRET) as JWTPayload;
-    if (decoded.type !== 'access') {
-      throw new Error('Invalid token type');
-    }
-    return decoded;
-  } catch (error) {
-    console.error('❌ Access token verification failed:', error);
-    throw new Error('Invalid access token');
-  }
+  const secret = getEnvVar('JWT_ACCESS_SECRET');
+  const decoded = jwt.verify(token, secret) as JWTPayload;
+  if (decoded.type !== 'access') throw new Error('Invalid token type');
+  return decoded;
 }
 
 export function verifyRefreshToken(token: string): JWTPayload {
-  try {
-    const decoded = jwt.verify(token, REFRESH_SECRET) as JWTPayload;
-    if (decoded.type !== 'refresh') {
-      throw new Error('Invalid token type');
-    }
-    return decoded;
-  } catch (error) {
-    console.error('❌ Refresh token verification failed:', error);
-    throw new Error('Invalid refresh token');
-  }
+  const secret = getEnvVar('JWT_REFRESH_SECRET');
+  const decoded = jwt.verify(token, secret) as JWTPayload;
+  if (decoded.type !== 'refresh') throw new Error('Invalid token type');
+  return decoded;
 }
 
 export function verifyEmailToken(token: string): JWTPayload {
-  try {
-    const decoded = jwt.verify(token, EMAIL_SECRET) as JWTPayload;
-    if (decoded.type !== 'email') {
-      throw new Error('Invalid token type');
-    }
-    return decoded;
-  } catch (error) {
-    console.error('❌ Email token verification failed:', error);
-    throw new Error('Invalid email verification token');
-  }
+  const secret = getEnvVar('JWT_EMAIL_SECRET');
+  const decoded = jwt.verify(token, secret) as JWTPayload;
+  if (decoded.type !== 'email') throw new Error('Invalid token type');
+  return decoded;
 }
 
 export function verifyResetToken(token: string): JWTPayload {
-  try {
-    const decoded = jwt.verify(token, RESET_SECRET) as JWTPayload;
-    if (decoded.type !== 'reset') {
-      throw new Error('Invalid token type');
-    }
-    return decoded;
-  } catch (error) {
-    console.error('❌ Reset token verification failed:', error);
-    throw new Error('Invalid password reset token');
-  }
+  const secret = getEnvVar('JWT_RESET_SECRET');
+  const decoded = jwt.verify(token, secret) as JWTPayload;
+  if (decoded.type !== 'reset') throw new Error('Invalid token type');
+  return decoded;
 }
