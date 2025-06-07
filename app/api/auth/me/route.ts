@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
         error: 'Invalid user',
       }, { status: 404 });
     }
-    
+
     return NextResponse.json({
       success: true,
       message: 'User profile retrieved successfully',

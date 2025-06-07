@@ -65,17 +65,17 @@ export async function POST(request: NextRequest) {
     }
     
     // Check if email is verified
-    // if (!user.isVerified) {
-    //   console.log('❌ Login blocked: Email not verified');
-    //   return NextResponse.json<ApiResponse>(
-    //     {
-    //       success: false,
-    //       message: 'Email verification required',
-    //       error: 'Please verify your email address before logging in'
-    //     },
-    //     { status: 403 }
-    //   );
-    // }
+    if (!user.isVerified) {
+      console.log('❌ Login blocked: Email not verified');
+      return NextResponse.json<ApiResponse>(
+        {
+          success: false,
+          message: 'Email verification required',
+          error: 'Please verify your email address before logging in'
+        },
+        { status: 403 }
+      );
+    }
     
     // Reset failed login attempts on successful login
     if (user.failedLoginAttempts > 0) {

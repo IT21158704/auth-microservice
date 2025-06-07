@@ -31,6 +31,16 @@ export const resetPasswordSchema = z.object({
     ),
 });
 
+export const resetForgotPasswordSchema = z.object({
+  password: z
+    .string()
+    .min(8, 'Password must be at least 8 characters')
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+      'Password must contain at least one uppercase letter, one lowercase letter, and one number'
+    ),
+});
+
 export const verifyEmailSchema = z.object({
   token: z.string().min(1, 'Token is required'),
 });

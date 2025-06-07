@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/mongo';
 import User from '@/models/User';
-import { verifyResetToken } from '@/lib/jwt';
+import { verifyAccessToken } from '@/lib/jwt';
 import { hashPassword } from '@/lib/auth';
 import { resetPasswordSchema } from '@/lib/validation';
 import { ApiResponse } from '@/types/types';
@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     
     try {
       // Verify the reset token
-      const decoded = verifyResetToken(token);
+      const decoded = verifyAccessToken(token);
       console.log('🔍 Reset token verified for user:', decoded.email);
       
       // Find user
@@ -37,17 +37,17 @@ export async function POST(request: NextRequest) {
       }
       
       // Check if user is verified
-      if (!user.isVerified) {
-        console.log('❌ Password reset blocked: Email not verified');
-        return NextResponse.json<ApiResponse>(
-          {
-            success: false,
-            message: 'Password reset failed',
-            error: 'Please verify your email address first'
-          },
-          { status: 403 }
-        );
-      }
+      // if (!user.isVerified) {
+      //   console.log('❌ Password reset blocked: Email not verified');
+      //   return NextResponse.json<ApiResponse>(
+      //     {
+      //       success: false,
+      //       message: 'Password reset failed',
+      //       error: 'Please verify your email address first'
+      //     },
+      //     { status: 403 }
+      //   );
+      // }
       
       // Hash new password
       const hashedPassword = await hashPassword(password);
