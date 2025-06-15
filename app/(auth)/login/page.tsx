@@ -1,23 +1,11 @@
 "use client"
 import React, { useState } from 'react';
 import { Lock, Mail, Eye, EyeOff, Loader2, AlertCircle, CheckCircle } from 'lucide-react';
-import { StorageInterface } from '@/types/types';
-
-export const mockStorage: StorageInterface = {
-    setItem: (key: string, value: string) => {
-      console.log(`Storing ${key}:`, value);
-    },
-    getItem: (key: string): string | null => {
-      console.log(`Getting ${key} from storage`);
-      return null; // Return a mock value if needed
-    },
-    removeItem: (key: string) => {
-      console.log(`Removing ${key} from storage`);
-    },
-  };
-  
+import { authUtils } from '@/utils/auth';
+import { useRouter } from 'next/navigation';
 
 const LoginPage = () => {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -27,7 +15,7 @@ const LoginPage = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  const handleInputChange = (e:any) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -37,37 +25,24 @@ const LoginPage = () => {
     if (error) setError('');
   };
 
-  const handleSubmit = async (e:any) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
     setSuccess('');
 
     try {
-      const response = await fetch('https://auth-microservice-orpin.vercel.app/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+      const result = await authUtils.login(formData.email, formData.password);
 
-      const data = await response.json();
-
-      if (response.ok && data.success) {
-        // Store tokens in localStorage (use actual localStorage in your project)
-        mockStorage.setItem('accessToken', data.data.tokens.accessToken);
-        mockStorage.setItem('refreshToken', data.data.tokens.refreshToken);
-        mockStorage.setItem('user', JSON.stringify(data.data.user));
-
+      if (result.success && result.data) {
         setSuccess('Login successful! Redirecting...');
         
         // Redirect to dashboard after successful login
         setTimeout(() => {
-          window.location.href = '/dashboard';
+          router.push('/dashboard');
         }, 1500);
       } else {
-        setError(data.message || 'Login failed. Please try again.');
+        setError(result.message || result.error || 'Login failed. Please try again.');
       }
     } catch (error) {
       setError('Network error. Please check your connection and try again.');
@@ -111,7 +86,7 @@ const LoginPage = () => {
           )}
 
           {/* Login Form */}
-          <div className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
             {/* Email Field */}
             <div>
               <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-300">
@@ -175,7 +150,7 @@ const LoginPage = () => {
 
             {/* Login Button */}
             <button
-              onClick={handleSubmit}
+              type="submit"
               disabled={!isFormValid || isLoading}
               className="flex items-center justify-center w-full px-4 py-3 space-x-2 font-medium text-white transition-all duration-200 bg-blue-600 rounded-lg hover:bg-blue-700 disabled:bg-gray-700 disabled:cursor-not-allowed"
             >
@@ -188,7 +163,7 @@ const LoginPage = () => {
                 <span>Sign In</span>
               )}
             </button>
-          </div>
+          </form>
 
           {/* Sign Up Link */}
           <div className="mt-6 text-center">
