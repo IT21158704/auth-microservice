@@ -49,6 +49,8 @@ export async function POST(request: NextRequest) {
       userId: user._id.toString(),
       email: user.email,
     });
+
+    console.log('resetTKN', resetToken)
     
     // Send password reset email
     await sendPasswordResetEmail(email, resetToken);

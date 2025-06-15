@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Authentication API Documentation</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #f5f7fa;
+      color: #333;
+      padding: 2rem;
+      max-width: 900px;
+      margin: auto;
+    }
+    h1 {
+      color: #0d6efd;
+    }
+    h2 {
+      border-bottom: 2px solid #eee;
+      padding-bottom: 5px;
+    }
+    .endpoint {
+      margin-bottom: 2rem;
+      padding: 1rem;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    .method {
+      font-weight: bold;
+      color: #fff;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .POST { background-color: #28a745; }
+    .GET { background-color: #007bff; }
+    .DELETE { background-color: #dc3545; }
+    code {
+      background: #eee;
+      padding: 2px 4px;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+    pre {
+      background: #eee;
+      padding: 1rem;
+      overflow-x: auto;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Authentication API Documentation</h1>
+
+  <div class="endpoint">
+    <h2><span class="method POST">POST</span> /api/auth/register</h2>
+    <p><strong>Description:</strong> Register a new user.</p>
+    <h4>Request Body:</h4>
+    <pre>{
+  "email": "user@example.com",
+  "password": "yourpassword"
+}</pre>
+    <h4>Response:</h4>
+    <pre>{
+  "success": true,
+  "message": "Registration successful. Please check your email to verify your account."
+}</pre>
+  </div>
+
+  <div class="endpoint">
+    <h2><span class="method GET">GET</span> /api/auth/verify-email?token=...</h2>
+    <p><strong>Description:</strong> Verify user email with token.</p>
+    <p><strong>Query Parameter:</strong> <code>token</code> (from email)</p>
+    <h4>Response:</h4>
+    <pre>{
+  "success": true,
+  "message": "Email verified successfully."
+}</pre>
+  </div>
+
+  <div class="endpoint">
+    <h2><span class="method POST">POST</span> /api/auth/login</h2>
+    <p><strong>Description:</strong> Login a user and set cookie token.</p>
+    <h4>Request Body:</h4>
+    <pre>{
+  "email": "user@example.com",
+  "password": "yourpassword"
+}</pre>
+    <h4>Response:</h4>
+    <pre>{
+  "success": true,
+  "message": "Login successful."
+}</pre>
+  </div>
+
+  <div class="endpoint">
+    <h2><span class="method POST">POST</span> /api/auth/logout</h2>
+    <p><strong>Description:</strong> Clear authentication cookie to logout user.</p>
+    <h4>Response:</h4>
+    <pre>{
+  "success": true,
+  "message": "Logged out successfully."
+}</pre>
+  </div>
+
+  <div class="endpoint">
+    <h2><span class="method POST">POST</span> /api/auth/forgot-password</h2>
+    <p><strong>Description:</strong> Send a password reset link to email.</p>
+    <h4>Request Body:</h4>
+    <pre>{
+  "email": "user@example.com"
+}</pre>
+    <h4>Response:</h4>
+    <pre>{
+  "success": true,
+  "message": "Password reset link sent."
+}</pre>
+  </div>
+
+  <div class="endpoint">
+    <h2><span class="method POST">POST</span> /api/auth/reset-password?token=...</h2>
+    <p><strong>Description:</strong> Reset the user's password using token.</p>
+    <p><strong>Query Parameter:</strong> <code>token</code> (from reset link)</p>
+    <h4>Request Body:</h4>
+    <pre>{
+  "newPassword": "newStrongPassword"
+}</pre>
+    <h4>Response:</h4>
+    <pre>{
+  "success": true,
+  "message": "Password has been reset successfully."
+}</pre>
+  </div>
+
+  <div class="endpoint">
+    <h2><span class="method GET">GET</span> /api/auth/me</h2>
+    <p><strong>Description:</strong> Get current session user info (optional).</p>
+    <h4>Response:</h4>
+    <pre>{
+  "success": true,
+  "user": {
+    "email": "user@example.com",
+    "isVerified": true,
+    "id": "..."
+  }
+}</pre>
+  </div>
+
+</body>
+</html>

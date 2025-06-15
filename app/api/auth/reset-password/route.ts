@@ -37,17 +37,17 @@ export async function POST(request: NextRequest) {
       }
       
       // Check if user is verified
-      // if (!user.isVerified) {
-      //   console.log('❌ Password reset blocked: Email not verified');
-      //   return NextResponse.json<ApiResponse>(
-      //     {
-      //       success: false,
-      //       message: 'Password reset failed',
-      //       error: 'Please verify your email address first'
-      //     },
-      //     { status: 403 }
-      //   );
-      // }
+      if (!user.isVerified) {
+        console.log('❌ Password reset blocked: Email not verified');
+        return NextResponse.json<ApiResponse>(
+          {
+            success: false,
+            message: 'Password reset failed',
+            error: 'Please verify your email address first'
+          },
+          { status: 403 }
+        );
+      }
       
       // Hash new password
       const hashedPassword = await hashPassword(password);
