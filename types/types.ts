@@ -16,3 +16,26 @@ export interface ApiResponse<T = any> {
     lastAttempt: Date;
     lockUntil?: Date;
   }
+  export interface StorageInterface {
+    setItem: (key: string, value: string) => void;
+    getItem: (key: string) => string | null;
+    removeItem: (key: string) => void;
+  }
+
+  export interface User {
+    id: string;
+    email: string;
+    isVerified: boolean;
+  }
+  
+  export interface LoginResponse {
+    success: boolean;
+    message: string;
+    data: {
+      user: User;
+      tokens: {
+        accessToken: string;
+        refreshToken: string;
+      };
+    };
+  }
